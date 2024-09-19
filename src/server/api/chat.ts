@@ -11,7 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     case 'hello':
       return res.status(200).json({ response: 'Hello! How can I help you today?' });
     case 'what is your name?':
-      return res.status(200).json({ response: "I'm a chatbot built by [Your Company]." });
+      return res.status(200).json({ response: "I'm a chatbot built by MAS." });
     case 'error':
       return res.status(500).json({ error: 'Something went wrong' });
     default:
