@@ -1,6 +1,6 @@
 # TL&DR
 
-- **Time to complete:** 7 days after receiving the task
+- **Time to complete:** 2 days after receiving the task
 - **Submission:** Commit your code to Github and share the link with us
 - **What we are looking for:** You know your way around React TypeScript and Next.js, and have a good practice in writing elegant code.
 
