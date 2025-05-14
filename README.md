@@ -23,7 +23,60 @@ The following tickets are in the tickets/ folder, and each ticket is required to
 - Ticket 2.1: Fetch a response from the dummy API when the user sends a message and display the bot’s response.
 - Ticket 2.2: Handle API errors, add a "Bot is typing..." indicator, and ensure graceful handling of failure cases.
 
+# 🧪 Candidate Take-Home Assessment
 
-You have been placed on the team as a frontend engineer and assigned the tickets found under `tickets/`. **Each ticket is required to completed.**
+Thank you for taking the time to complete this assignment!
 
-Good luck hacking!
+---
+
+## Submission Instructions
+
+**You must submit within 48 hours** of receiving this task.
+
+### Step 1: Fork this repo
+
+Click the "Fork" button at the top-right of this GitHub page to create your own copy.
+
+### Step 2: Complete the assignment
+
+Follow the instructions under the `tickets/` folder.
+
+Make all your changes on a new branch called:
+
+### Step 3: Submit your work
+
+After committing your solution:
+1. Go to your **forked repository on GitHub**
+2. Click **“Compare & pull request”** and submit a PR to our repo  
+   Target branch: `main`
+3. Title your PR: `Candidate Submission – [Your Name]`
+
+If you run into GitHub permission issues or want to submit a zip file instead, you can also send it via email to:
+ `hi@jeffreyd.cz`
+
+---
+
+## 👀 What We’re Looking For
+
+- Clean, modular React + TypeScript + Next.js code
+- Clear component structure and state handling
+- Graceful error handling + user experience
+- Good design instincts (bonus!)
+
+---
+
+## 🛠 Development Setup
+
+### Install & Run:
+```bash
+git clone https://github.com/YOUR_USERNAME/candidate-take-home.git
+cd candidate-take-home
+yarn install
+yarn dev
+```
+
+Production Test:
+```bashbash
+yarn build
+yarn start
+```
