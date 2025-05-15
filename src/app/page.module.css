@@ -168,7 +168,7 @@ a.secondary {
   justify-content: flex-start;
 }
 
-.user .messageBubble::after,
+/* .user .messageBubble::after,
 .bot .messageBubble::after {
   content: "";
   position: absolute;
@@ -177,6 +177,12 @@ a.secondary {
   background: inherit;
   bottom: 0;
   transform: translateY(50%) rotate(45deg);
+} */
+
+
+.user .messageBubble::after,
+.bot .messageBubble::after {
+  content: none
 }
 
 .typingBubble {

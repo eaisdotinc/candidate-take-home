@@ -5,14 +5,17 @@ import MessageBubble from '../components/MessageBubble';
 import InputBar from '../components/InputBar';
 
 const ChatWindow = () => {
-  const { messages, input, setInput, handleSend, isBotTyping, bottomRef } = useChat();
+  const { messages, input, setInput, handleSend, isBotTyping, bottomRef, windowRef } = useChat();
 
   return (
     <>
-      <div className={styles.chatWindow}>
-        {messages.map((msg, idx) => (
-          <MessageBubble key={idx} sender={msg.sender} text={msg.text} />
-        ))}
+      <div className={styles.chatWindow} ref={windowRef}>
+        {messages
+          .filter(m => m.text.trim().length)
+          .map((msg, idx) => (
+            <MessageBubble key={idx} sender={msg.sender} text={msg.text} />
+          ))}
+
 
         {isBotTyping && (
           <div className={`${styles.messageRow} ${styles.bot}`}>

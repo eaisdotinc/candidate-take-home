@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -15,14 +17,29 @@
     "postcss": "^8.5.3",
     "react": "^18",
     "react-dom": "^18",
-    "tailwindcss": "^4.1.6"
+    "react-hot-toast": "^2.5.2",
+    "tailwindcss": "^4.1.6",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.12",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-react": "^7.37.5",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.5.3",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,css,md,json}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
