@@ -50,14 +50,45 @@
   border-bottom-left-radius: 0.25rem;
 }
 
-.loadingMessage {
-  padding: 0.5rem 1rem;
-  min-width: 60px;
+.errorMessage {
+  background-color: #ffeded;
+  border: 1px solid #ffd0d0;
+  display: flex;
+  flex-direction: column;
+}
+
+.retryButton {
+  align-self: flex-end;
+  margin-top: 0.5rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+  background-color: #d32f2f;
+}
+
+.typingIndicator {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  max-width: fit-content;
+}
+
+.typingText {
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
 }
 
 .loadingDots {
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
 .loadingDots span {

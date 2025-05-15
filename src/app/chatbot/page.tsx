@@ -5,17 +5,23 @@ import styles from './page.module.css';
 
 export default function ChatbotPage() {
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<{ text: string; sender: 'user' | 'bot' }[]>([
+  const [messages, setMessages] = useState<{ 
+    text: string; 
+    sender: 'user' | 'bot'; 
+    isError?: boolean; 
+    originalMessage?: string;
+  }[]>([
+
     { text: 'Hello! How can I help you today?', sender: 'bot' }
   ]);
 
   const [isLoading, setIsLoading] = useState(false);
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom whenever messages change
+  // Scroll to bottom whenever messages change or loading state changes
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const scrollToBottom = () => {
     if (chatWindowRef.current) {
@@ -36,8 +42,10 @@ export default function ChatbotPage() {
       
       // Add bot response to chat
       setMessages(prev => [...prev, { 
-        text: data.message, 
-        sender: 'bot' 
+        text: 'Sorry, something went wrong. Please try again later.', 
+        sender: 'bot',
+        isError: true,
+        originalMessage: userMessage
       }]);
     } catch (error) {
       console.error('Error fetching bot response:', error);
@@ -52,18 +60,27 @@ export default function ChatbotPage() {
     }
   };
 
-  const handleSendMessage = () => {
-    if (message.trim() === '' || isLoading) return;
-    const userMessage = message.trim();
+  const handleSendMessage = (textToSend?: string) => {
+    const userMessage = textToSend || message.trim();
+  
+    if (userMessage === '' || isLoading) return;
 
-    
-    // Add user message to chat
-    setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
-
-    setMessage('');
+    // Add user message to chat if it's a new message (not a retry)
+    if (!textToSend) {
+      setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
+      // Clear input field
+      setMessage('');
+    }
     
     // Fetch bot response from API
     fetchBotResponse(userMessage);
+  };
+
+  const handleRetry = (originalMessage: string) => {
+    // Remove the error message
+    setMessages(prev => prev.filter(msg => !msg.isError));
+    // Try again with the original message
+    handleSendMessage(originalMessage);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -84,16 +101,25 @@ export default function ChatbotPage() {
             key={index}
             className={`${styles.message} ${
               msg.sender === 'user' ? styles.userMessage : styles.botMessage
-            }`}
+            } ${msg.isError ? styles.errorMessage : ''}`}
           >
             {msg.text}
+            {msg.isError && msg.originalMessage && (
+              <button 
+                onClick={() => handleRetry(msg.originalMessage!)}
+                className={styles.retryButton}
+              >
+                Retry
+              </button>
+            )}
           </div>
         ))}
         {isLoading && (
-          <div className={`${styles.message} ${styles.botMessage} ${styles.loadingMessage}`}>
-            <span className={styles.loadingDots}>
-              <span>.</span><span>.</span><span>.</span>
-            </span>
+          <div className={`${styles.message} ${styles.botMessage} ${styles.typingIndicator}`}>
+            <div className={styles.typingText}>Bot is typing</div>
+              <div className={styles.loadingDots}>
+                <span>.</span><span>.</span><span>.</span>
+              </div>
           </div>
         )}
       </div>
@@ -109,7 +135,7 @@ export default function ChatbotPage() {
           disabled={isLoading}
         />
         <button 
-          onClick={handleSendMessage} 
+          onClick={() => handleSendMessage()}
           className={styles.sendButton}
           disabled={isLoading || message.trim() === ''}
         >

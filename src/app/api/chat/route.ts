@@ -5,8 +5,18 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const message = searchParams.get('message') || '';
   
-  // Simulate processing time
-  await new Promise(resolve => setTimeout(resolve, 500));
+  // Simulate processing time (between 500ms and 1.5s)
+  const delay = Math.floor(Math.random() * 1000) + 500;
+  await new Promise(resolve => setTimeout(resolve, delay));
+  
+  // Simulate an error occasionally (for testing purposes)
+  // If the message contains "error" or "fail", we'll simulate an error
+  if (message.toLowerCase().includes('error') || message.toLowerCase().includes('fail')) {
+    return new NextResponse(null, {
+      status: 500,
+      statusText: 'Internal Server Error'
+    });
+  }
   
   // Generate a dummy response based on the user's message
   let response = '';
