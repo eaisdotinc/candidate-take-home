@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './page.module.css';
 
 export default function ChatbotPage() {
@@ -8,6 +8,20 @@ export default function ChatbotPage() {
   const [messages, setMessages] = useState<{ text: string; sender: 'user' | 'bot' }[]>([
     { text: 'Hello! How can I help you today?', sender: 'bot' }
   ]);
+
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  };
+
 
   const handleSendMessage = () => {
     if (message.trim() === '') return;
@@ -38,7 +52,7 @@ export default function ChatbotPage() {
         <h1>Chatbot</h1>
       </div>
       
-      <div className={styles.chatWindow}>
+      <div ref={chatWindowRef} className={styles.chatWindow}>
         {messages.map((msg, index) => (
           <div
             key={index}
