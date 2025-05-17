@@ -1,95 +1,127 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
 
-export default function Home() {
+import type React from "react"
+
+import { useState, useRef, useEffect } from "react"
+import styles from "./page.module.css"
+
+type Message = {
+  id: string
+  text: string
+  sender: "user" | "bot"
+}
+
+export default function ChatbotPage() {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [inputValue, setInputValue] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to the bottom when new messages are added
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!inputValue.trim()) return
+
+    // Add user message to chat
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: inputValue,
+      sender: "user",
+    }
+
+    setMessages((prevMessages) => [...prevMessages, userMessage])
+    setInputValue("")
+
+    // Show typing indicator
+    setIsTyping(true)
+
+    try {
+      // Fetch response from API
+      const response = await fetch(`/api/chat?q=${encodeURIComponent(inputValue)}`)
+
+      if (!response.ok) {
+        throw new Error("API request failed")
+      }
+
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      // Add bot response to chat
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.response,
+        sender: "bot",
+      }
+
+      setMessages((prevMessages) => [...prevMessages, botMessage])
+    } catch (error) {
+      console.error("Error fetching response:", error)
+
+      // Add error message to chat
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Sorry, something went wrong. Please try again.",
+        sender: "bot",
+      }
+
+      setMessages((prevMessages) => [...prevMessages, errorMessage])
+    } finally {
+      setIsTyping(false)
+    }
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className={styles.container}>
+      <div className={styles.chatHeader}>
+        <h1>Lost Girls Vintage Support</h1>
+      </div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div className={styles.chatWindow}>
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`${styles.message} ${message.sender === "user" ? styles.userMessage : styles.botMessage}`}
           >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+            {message.text}
+          </div>
+        ))}
+
+        {isTyping && (
+          <div className={`${styles.message} ${styles.botMessage} ${styles.typingIndicator}`}>
+            <span>●</span>
+            <span>●</span>
+            <span>●</span>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      <form onSubmit={handleSubmit} className={styles.inputForm}>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Type your message..."
+          className={styles.messageInput}
+          disabled={isTyping}
+        />
+        <button type="submit" className={styles.sendButton} disabled={isTyping || !inputValue.trim()}>
+          Send
+        </button>
+      </form>
+    </main>
+  )
 }
