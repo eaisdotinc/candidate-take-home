@@ -28,7 +28,7 @@ const InputBar: React.FC<InputBarProps> = ({
           type="text"
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
-          placeholder="Type your message..."
+          placeholder="Ask me anything..."
           className={styles.messageInput}
           aria-label="Message input"
           disabled={isBotTyping}

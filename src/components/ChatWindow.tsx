@@ -27,11 +27,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             msg.sender === "user" ? styles.messageRowUser : styles.messageRowBot
           }`}
         >
+          {msg.sender === "bot" && <div className={styles.botAvatar}></div>}
           <MessageBubble message={msg} />
         </div>
       ))}
       {isBotTyping && (
         <div className={`${styles.messageRow} ${styles.messageRowBot}`}>
+          <div className={styles.botAvatar}></div>
           <div className={`${styles.messageBubble} ${styles.typingIndicator}`}>
             <p className={styles.messageText}>Bot is typing...</p>
           </div>

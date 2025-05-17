@@ -84,11 +84,40 @@ export function useChat() {
             timestamp: new Date(msg.timestamp),
           })
         );
-        setMessages(parsedMessages);
+        if (parsedMessages.length > 0) {
+          setMessages(parsedMessages);
+        } else {
+          setMessages([
+            {
+              id: Date.now().toString() + "-bot-welcome",
+              text: "Hello! I am Lost Girls Vintage's assistant. How can I help you today?",
+              sender: "bot",
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      } else {
+        setMessages([
+          {
+            id: Date.now().toString() + "-bot-welcome",
+            text: "Hello! I am Lost Girls Vintage's assistant. How can I help you today?",
+            sender: "bot",
+            timestamp: new Date(),
+          },
+        ]);
       }
     } catch (error) {
       console.error("Failed to load chat history from localStorage:", error);
       localStorage.removeItem("chat_history");
+
+      setMessages([
+        {
+          id: Date.now().toString() + "-bot-welcome",
+          text: "Hello! I am Lost Girls Vintage's assistant. How can I help you today?",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
     }
   }, []);
 

@@ -4,7 +4,8 @@ import React from "react";
 import styles from "./ChatPage.module.css";
 import { useChat } from "../hooks/useChat";
 import ChatWindow from "../components/ChatWindow";
-import InputBar from "../components/InputBar";
+import ChatInput from "../components/ChatInput";
+import AppHeader from "../components/AppHeader";
 
 export default function ChatPage() {
   const {
@@ -18,24 +19,24 @@ export default function ChatPage() {
   } = useChat();
 
   const handleFormSubmit = () => {
-    handleSubmit(inputValue);
-    setInputValue("");
+    if (inputValue.trim()) {
+      handleSubmit(inputValue);
+      setInputValue("");
+    }
   };
 
   return (
-    <div className={styles.chatPageContainer}>
-      <header className={styles.chatHeader}>
-        <h1 className={styles.chatHeaderTitle}>Lost Girls Vintage Chat</h1>
-      </header>
+    <div className={styles.pageContainer}>
+      <AppHeader />
 
-      <div className={styles.chatPanel}>
+      <div className={styles.chatAreaContainer}>
         <ChatWindow
           messages={messages}
           isBotTyping={isBotTyping}
           messagesEndRef={messagesEndRef}
           chatWindowRef={chatWindowRef}
         />
-        <InputBar
+        <ChatInput
           inputValue={inputValue}
           onInputChange={setInputValue}
           onSubmit={handleFormSubmit}
