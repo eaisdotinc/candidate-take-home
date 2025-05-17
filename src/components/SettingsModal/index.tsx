@@ -1,4 +1,3 @@
-//geminiclone/src/components/ui/SettingsModal/index.tsx
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import ModelSelector from "./ModelSelector";
@@ -18,7 +17,7 @@ interface SettingsModalProps {
     model: string;
     systemInstruction: string;
   }
-// Main Settings Modal Component
+
 export default function SettingsModal({
     isOpen, onClose, onSave, currentSettings
   }: SettingsModalProps) {
@@ -28,7 +27,7 @@ export default function SettingsModal({
       systemInstruction: currentSettings.systemInstruction
     });
     
-    // Reset settings when modal opens
+
     useEffect(() => {
       if (isOpen) {
         setSettings({
@@ -38,7 +37,7 @@ export default function SettingsModal({
         });
       }
       
-      // Handle escape key press
+
       const handleEscKey = (e: KeyboardEvent) => { 
         if (isOpen && e.key === "Escape") onClose(); 
       };
@@ -48,8 +47,7 @@ export default function SettingsModal({
     }, [isOpen, currentSettings, onClose]);
     
     if (!isOpen) return null;
-    
-    // Update handlers
+
     const updateTemperature = (value: number) => {
       setSettings(prev => ({ ...prev, temperature: value }));
     };

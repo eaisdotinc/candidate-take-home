@@ -1,4 +1,3 @@
-//geminiclone/src/components/ui/ChatInput.tsx
 "use client";
 import { useState } from "react";
 import { Settings, Send, X } from "lucide-react";
@@ -34,7 +33,6 @@ export default function ChatInput({ onSend, onOpenSettings }: ChatInputProps) {
 
   return (
     <div className="fixed  bottom-0 left-0 right-0 flex flex-col max-w-4xl  mx-auto w-full">
-      {/* Input container with Material Design-inspired elevation */}
       <div
         className={`
           flex items-center border border-black/10 p-3 mx-4   rounded-t-3xl
@@ -43,7 +41,6 @@ export default function ChatInput({ onSend, onOpenSettings }: ChatInputProps) {
         
         `}
       >
-        {/* Input wrapper */}
         <div className="relative flex-1 mx-2">
           <textarea
             className="w-full px-3 py-2 bg-transparent border-none focus:outline-none"

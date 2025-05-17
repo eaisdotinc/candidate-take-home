@@ -1,4 +1,4 @@
-//geminiclone/src/components/ui/SettingsModal/ModelSelector.tsx
+
 import { Bot } from "lucide-react";
 import { useState } from "react";
 

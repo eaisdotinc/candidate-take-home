@@ -10,8 +10,7 @@ interface MessageWindowProps {
 
 export default function MessageWindow({ history }: MessageWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
-  // Auto-scroll to bottom when new messages arrive
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history]);
@@ -27,7 +26,7 @@ export default function MessageWindow({ history }: MessageWindowProps) {
               key={index}
               className={`flex ${isUser ? "justify-end" : "justify-start"}`}
             >
-              {/* For bot messages, avatar appears first */}
+           
               {!isUser && (
                 <div className="mr-2">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300">
@@ -36,7 +35,7 @@ export default function MessageWindow({ history }: MessageWindowProps) {
                 </div>
               )}
               
-              {/* Message bubble */}
+            
               <div
                 className={`
                   px-4 py-2 shadow-sm rounded-lg
@@ -54,7 +53,7 @@ export default function MessageWindow({ history }: MessageWindowProps) {
                 </div>
               </div>
               
-              {/* For user messages, avatar appears last */}
+             
               {isUser && (
                 <div className="ml-2">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500">
@@ -66,7 +65,7 @@ export default function MessageWindow({ history }: MessageWindowProps) {
           );
         })}
         
-        {/* Invisible element to help scroll to bottom */}
+  
         <div ref={messagesEndRef} />
       </div>
     </div>

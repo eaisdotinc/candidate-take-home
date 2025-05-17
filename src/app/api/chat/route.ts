@@ -1,11 +1,9 @@
-//google-gemini-clone/src/app/api/chat/route.ts
-
 import { NextResponse } from "next/server";
 import { chattogemini } from "@/utils/geminiHelpers";
 import { ChatHistory, ChatSettings } from "@/types";
 
 export async function POST(request: Request) {
-  // Function logic will go here
+  
   try {
     const { userMessage, history, settings } = (await request.json()) as {
       userMessage: string;

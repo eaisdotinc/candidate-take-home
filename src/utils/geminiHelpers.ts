@@ -1,4 +1,3 @@
-//google-gemini-clone/src/utils/geminiHelpers.ts
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ChatHistory, GenerationConfig, ChatSettings } from "@/types";
 const apiKey = process.env.GEMINI_API_KEY;
