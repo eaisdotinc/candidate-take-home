@@ -1,0 +1,227 @@
+.chatPageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f0f2f5;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.chatHeader {
+  width: 100%;
+  max-width: 768px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.chatHeaderTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Chat Panel */
+.chatPanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 768px;
+  height: calc(100vh - 160px);
+  background-color: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .chatPanel {
+    height: 75vh;
+  }
+}
+
+/* Chat Window */
+.chatWindow {
+  flex-grow: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Message Bubbles */
+.messageRow {
+  display: flex;
+}
+
+.messageRowUser {
+  justify-content: flex-end;
+}
+
+.messageRowBot {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.userMessage {
+  background-color: #007bff;
+  color: white;
+  border-bottom-right-radius: 6px;
+}
+
+.botMessage {
+  background-color: #e9ecef;
+  color: #333;
+  border-bottom-left-radius: 6px;
+}
+
+.errorMessage {
+  background-color: #dc3545;
+  color: white;
+  border-bottom-left-radius: 6px;
+}
+
+.messageText {
+  font-size: 0.875rem;
+}
+
+.messageTimestamp {
+  font-size: 0.75rem;
+  margin-top: 6px;
+  text-align: right;
+}
+
+.userMessage .messageTimestamp {
+  color: #cce5ff;
+}
+
+.botMessage .messageTimestamp {
+  color: #6c757d;
+}
+
+.typingIndicator {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: #e9ecef;
+  color: #495057;
+  font-style: italic;
+  font-size: 0.875rem;
+  border-bottom-left-radius: 6px;
+}
+
+/* Input Area */
+.inputAreaFooter {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-top: 1px solid #dee2e6;
+}
+
+.inputForm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.messageInput {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.messageInput:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.sendButton {
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sendButton:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sendButton:disabled {
+  background-color: #6c757d;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  .chatPageContainer {
+    background-color: #1a202c;
+  }
+  .chatHeaderTitle {
+    color: #e2e8f0;
+  }
+  .chatPanel {
+    background-color: #2d3748;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+      0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  }
+  .chatWindow {
+  }
+  .botMessage {
+    background-color: #4a5568;
+    color: #e2e8f0;
+  }
+  .botMessage .messageTimestamp {
+    color: #a0aec0;
+  }
+  .userMessage {
+    background-color: #2b6cb0;
+  }
+  .userMessage .messageTimestamp {
+    color: #bee3f8;
+  }
+  .typingIndicator {
+    background-color: #4a5568;
+    color: #cbd5e0;
+  }
+  .inputAreaFooter {
+    background-color: #2d3748;
+    border-top-color: #4a5568;
+  }
+  .messageInput {
+    border-color: #4a5568;
+    background-color: #1a202c;
+    color: #e2e8f0;
+  }
+  .messageInput::placeholder {
+    color: #a0aec0;
+  }
+  .messageInput:focus {
+    border-color: #2b6cb0;
+    box-shadow: 0 0 0 0.2rem rgba(43, 108, 176, 0.35);
+  }
+  .sendButton {
+  }
+}
