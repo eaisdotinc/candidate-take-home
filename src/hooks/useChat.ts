@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export interface MessageType {
   id: string;
