@@ -1,95 +1,141 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import React, { useState, useEffect, useRef, FormEvent } from "react";
+import styles from "./ChatPage.module.css";
+
+interface Message {
+  id: string;
+  text: string;
+  sender: "user" | "bot" | "error";
+  timestamp: Date;
+}
+
+export default function ChatPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString() + "-user",
+      text: inputValue,
+      sender: "user",
+      timestamp: new Date(),
+    };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInputValue("");
+    setIsBotTyping(true);
+
+    try {
+      const response = await fetch(
+        `/api/chat?message=${encodeURIComponent(userMessage.text)}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const botMessage: Message = {
+        id: Date.now().toString() + "-bot",
+        text: data.response,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+    } catch (error) {
+      console.error("Failed to fetch bot response:", error);
+      const errorMessage: Message = {
+        id: Date.now().toString() + "-error",
+        text: "Sorry, something went wrong. Please try again.",
+        sender: "error",
+        timestamp: new Date(),
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setIsBotTyping(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className={styles.chatPageContainer}>
+      <header className={styles.chatHeader}>
+        <h1 className={styles.chatHeaderTitle}>Lost Girls Vintage Chat</h1>
+      </header>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+      <div className={styles.chatPanel}>
+        <div className={styles.chatWindow}>
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`${styles.messageRow} ${
+                msg.sender === "user"
+                  ? styles.messageRowUser
+                  : styles.messageRowBot
+              }`}
+            >
+              <div
+                className={`${styles.messageBubble} ${
+                  msg.sender === "user"
+                    ? styles.userMessage
+                    : msg.sender === "bot"
+                    ? styles.botMessage
+                    : styles.errorMessage
+                }`}
+              >
+                <p className={styles.messageText}>{msg.text}</p>
+                <p className={styles.messageTimestamp}>
+                  {msg.timestamp.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+            </div>
+          ))}
+          {isBotTyping && (
+            <div className={`${styles.messageRow} ${styles.messageRowBot}`}>
+              <div
+                className={`${styles.messageBubble} ${styles.typingIndicator}`}
+              >
+                <p className={styles.messageText}>Bot is typing...</p>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <footer className={styles.inputAreaFooter}>
+          <form onSubmit={handleSubmit} className={styles.inputForm}>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Type your message..."
+              className={styles.messageInput}
+              aria-label="Message input"
+              disabled={isBotTyping}
+            />
+            <button
+              type="submit"
+              className={styles.sendButton}
+              disabled={isBotTyping || !inputValue.trim()}
+            >
+              Send
+            </button>
+          </form>
+        </footer>
+      </div>
     </div>
   );
 }
