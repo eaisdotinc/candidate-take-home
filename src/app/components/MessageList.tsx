@@ -1,27 +1,29 @@
-'use client';
-
+import React from 'react';
 import { Message } from '../types/message';
+import styles from '../styles/Chatbot.module.css';
 
-interface Props {
+interface MessageListProps {
   messages: Message[];
   isTyping: boolean;
 }
 
-export function MessageList({ messages, isTyping }: Props) {
+export function MessageList({ messages, isTyping }: MessageListProps) {
   return (
-    <div className="p-4 border h-80 overflow-y-auto space-y-2 bg-white">
+    <div className={styles.messages} aria-live="polite" aria-atomic="false">
       {messages.map(msg => (
         <div
           key={msg.id}
-          className={`text-sm p-2 rounded max-w-xs ${
-            msg.from === 'user' ? 'ml-auto bg-blue-100 text-right' : 'mr-auto bg-green-100'
+          className={`${styles.message} ${
+            msg.from === 'user' ? styles.messageUser : styles.messageBot
           }`}
         >
           {msg.text}
         </div>
       ))}
       {isTyping && (
-        <div className="italic text-gray-500">🤖 Bot is typing...</div>
+        <div className={styles.typingIndicator} aria-live="assertive">
+          🤖 Bot is typing...
+        </div>
       )}
     </div>
   );

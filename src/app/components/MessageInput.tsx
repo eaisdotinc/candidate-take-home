@@ -1,32 +1,39 @@
-'use client';
+import React, { useState, FormEvent } from 'react';
+import styles from '../styles/Chatbot.module.css';
 
-import { useState } from 'react';
-
-interface Props {
-  onSend: (text: string) => void;
-  disabled: boolean;
+interface MessageInputProps {
+  onSend: (message: string) => void;
+  disabled?: boolean;
 }
 
-export function MessageInput({ onSend, disabled }: Props) {
+export function MessageInput({ onSend, disabled }: MessageInputProps) {
   const [input, setInput] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!input.trim()) return;
-    onSend(input.trim());
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    onSend(trimmed);
     setInput('');
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="flex mt-2">
+    <form className={styles.inputArea} onSubmit={handleSubmit}>
       <input
-        className="flex-grow border rounded p-2"
+        type="text"
+        className={styles.inputField}
+        placeholder="Type your message..."
         value={input}
         onChange={e => setInput(e.target.value)}
         disabled={disabled}
-        placeholder="Type a message..."
+        aria-label="Chat message input"
       />
-      <button type="submit" className="ml-2 px-4 py-2 bg-black text-white rounded" disabled={disabled}>
+      <button
+        type="submit"
+        className={styles.sendButton}
+        disabled={disabled || input.trim() === ''}
+        aria-label="Send message"
+      >
         Send
       </button>
     </form>

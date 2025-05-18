@@ -1,33 +1,57 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Message } from '../types/message';
 import { getBotResponse } from '../services/chatbotService';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
 import { v4 as uuidv4 } from 'uuid';
+import styles from '../styles/Chatbot.module.css';
 
 export function Chatbot() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: uuidv4(),
+      from: 'bot',
+      text: '👋 Hello! Welcome to Lost Girls Vintage. How can I help you today?',
+    },
+  ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const sendMessage = async (text: string) => {
+  async function sendMessage(text: string) {
+    setError(null);
     const userMessage: Message = { id: uuidv4(), from: 'user', text };
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    const botText = await getBotResponse(text);
-    const botMessage: Message = { id: uuidv4(), from: 'bot', text: botText };
-
-    setMessages(prev => [...prev, botMessage]);
-    setIsTyping(false);
-  };
+    try {
+      const botText = await getBotResponse(text);
+      const botMessage: Message = { id: uuidv4(), from: 'bot', text: botText };
+      setMessages(prev => [...prev, botMessage]);
+    } catch (e) {
+      setError('Oops! Something went wrong. Please try again.');
+    } finally {
+      setIsTyping(false);
+    }
+  }
 
   return (
-    <div className="max-w-md mx-auto p-4 border rounded shadow bg-gray-50">
-      <h2 className="text-lg font-bold mb-2">Lost Girls Chatbot</h2>
+    <section className={styles.chatbot} role="region" aria-label="Lost Girls Vintage Chatbot">
+      <header className={styles.header}>Lost Girls Vintage Chatbot</header>
+
       <MessageList messages={messages} isTyping={isTyping} />
+
+      {error && (
+        <div
+          role="alert"
+          style={{ color: 'crimson', textAlign: 'center', margin: '0.5rem 0' }}
+        >
+          {error}
+        </div>
+      )}
+
       <MessageInput onSend={sendMessage} disabled={isTyping} />
-    </div>
+    </section>
   );
 }
