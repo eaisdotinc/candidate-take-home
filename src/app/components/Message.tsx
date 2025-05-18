@@ -1,6 +1,6 @@
 "use client";
 
-import { Message as MessageType } from './Chatbot';
+import { Message as MessageType } from '../hooks/useChatHooks';
 import styles from './Chatbot.module.css';
 
 interface MessageProps {
@@ -10,8 +10,7 @@ interface MessageProps {
 export default function Message({ message }: MessageProps) {
   return (
     <div
-      className={`${styles.messageBubble} ${message.sender === 'user' ? styles.userMessage : styles.botMessage
-        }`}
+      className={`${styles.messageBubble} ${message.sender === 'user' ? styles.userMessage : styles.botMessage}`}
     >
       {message.text}
     </div>
