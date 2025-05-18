@@ -1,42 +1,152 @@
+@import 'tailwindcss';
+
+/* Base responsive container */
+.chat-container {
+  width: 100vw;
+  max-width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Mobile-first approach */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --chat-padding-x: 0.75rem;
+  --chat-padding-y: 0.75rem;
+  --header-height: 60px;
+  --footer-height: 70px;
+  --border-radius: 0.5rem;
+  --message-max-width: 85%;
 }
 
-@media (prefers-color-scheme: dark) {
+/* Media queries for tablet and desktop */
+@media (min-width: 768px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --chat-padding-x: 1.5rem;
+    --chat-padding-y: 1.25rem;
+    --header-height: 70px;
+    --footer-height: 80px;
+    --border-radius: 0.75rem;
+    --message-max-width: 75%;
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@media (min-width: 1024px) {
+  :root {
+    --chat-padding-x: 2rem;
+    --chat-padding-y: 1.5rem;
+    --header-height: 80px;
+    --footer-height: 90px;
+    --message-max-width: 65%;
   }
+}
+
+/* Responsive fixes for small screens */
+@media (max-width: 375px) {
+  .vintage-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .vintage-header p {
+    font-size: 0.7rem;
+  }
+  
+  .message-input {
+    font-size: 0.875rem;
+  }
+}
+
+/* Make sure the scrolling area fills available space correctly */
+.messages-container {
+  height: calc(100vh - var(--header-height) - var(--footer-height));
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Prevent content overflow in messages */
+.message-bubble {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: var(--message-max-width);
+}
+
+/* Ensure images/media in messages don't overflow */
+.message-bubble img, 
+.message-bubble video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optimizations for touch devices */
+@media (hover: none) {
+  .message-input:focus {
+    font-size: 16px; /* Prevents iOS zoom on input focus */
+  }
+  
+  .scrollable::-webkit-scrollbar {
+    width: 4px; /* Thinner scrollbar for touch */
+  }
+}
+
+/* Landscape phone orientation fixes */
+@media (max-height: 500px) and (orientation: landscape) {
+  .vintage-header {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  .vintage-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .vintage-header p {
+    margin-top: 0;
+    font-size: 0.75rem;
+  }
+  
+  .footer-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Make decoration elements responsive */
+.decoration-element {
+  opacity: 0.8;
+}
+
+@media (max-width: 767px) {
+  .decoration-element:not(.essential) {
+    display: none;
+  }
+}
+
+/* Animation for message appearance */
+@keyframes slideInRight {
+  from {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.message-user {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.message-bot {
+  animation: slideInLeft 0.3s ease-out;
 }
