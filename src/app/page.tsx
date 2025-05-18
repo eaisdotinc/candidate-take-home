@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import styles from "./page.module.css"
+import styles from "./page.module.css";
 import axios from 'axios';
 
 export default function ChatPage() {
@@ -18,10 +18,11 @@ export default function ChatPage() {
     if (!input.trim()) return;
 
     const userMessage = { sender: 'user', text: input };
-    setMessages((prev) => [...prev, userMessage]);
+
+    // Add user's message and temporary "Bot is typing..." message
+    setMessages((prev) => [...prev, userMessage, { sender: 'bot', text: 'Bot is typing...' }]);
     setInput('');
     setLoading(true);
-    setMessages((prev) => [...prev, { sender: 'bot', text: 'Bot is typing...' }]);
 
     try {
       const res = await axios.post('/api/chat', {
@@ -30,12 +31,13 @@ export default function ChatPage() {
 
       const responseData = res.data.reply;
 
+      // Replace "Bot is typing..." with actual response
       setMessages((prev) => [
-        ...prev,
-        { sender: 'user', text: input },
+        ...prev.slice(0, -1), // Remove "Bot is typing..."
         { sender: 'bot', text: responseData },
       ]);
     } catch (error) {
+      // Replace "Bot is typing..." with error message
       setMessages((prev) => [
         ...prev.slice(0, -1),
         { sender: 'bot', text: 'Something went wrong. Please try again.' },
