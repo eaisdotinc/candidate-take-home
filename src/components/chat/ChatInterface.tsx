@@ -10,8 +10,6 @@ type Message = {
     timestamp: Date;
 };
 
-
-
 export default function ChatInterface() {
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -26,7 +24,7 @@ export default function ChatInterface() {
     const [isBotTyping, setIsBotTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to bottom when messages change
+    // Auto-scroll to bottom  
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isBotTyping]);
@@ -51,9 +49,9 @@ export default function ChatInterface() {
         setIsBotTyping(true);
 
         try {
-            // Simulate typing delay before making the request
-            await new Promise(resolve => setTimeout(resolve, 500));
-
+            //   typing delay before making the request
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
             const response = await fetch(`/api?q=${encodeURIComponent(inputValue)}`, {
                 method: 'GET',
                 headers: {
@@ -72,9 +70,9 @@ export default function ChatInterface() {
                 throw new Error(data.error);
             }
 
-            // Simulate typing delay before showing response
-            await new Promise(resolve => setTimeout(resolve, 0+ 0));
-
+            //  typing delay before showing response
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+            
             setMessages((prev) => [
                 ...prev,
                 {
@@ -103,25 +101,39 @@ export default function ChatInterface() {
 
     return (
         <div className={styles.chatContainer}>
+            <div className={styles.chatHeader}>
+                <div className={styles.branding}>
+                    <div className={styles.logo}>👗</div>
+                    <h2>Lost Girls Vintage</h2>
+                </div>
+                <div className={styles.status}>
+                    {isBotTyping ? 'Assistant is typing...' : 'Online'}
+                </div>
+            </div>
+
             <div className={styles.messagesContainer}>
                 {messages.map((message) => (
                     <div
                         key={message.id}
                         className={`${styles.message} ${message.isUser ? styles.userMessage : styles.botMessage}`}
                     >
-                        <div className={styles.messageContent}>{message.text}</div>
-                        <div className={styles.timestamp}>
-                            {message.timestamp.toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }).toLowerCase()}
+                        {!message.isUser && (
+                            <div className={styles.botAvatar}>👗</div>
+                        )}
+                        <div className={styles.messageContent}>
+                            <div className={styles.messageText}>{message.text}</div>
+                            <div className={styles.timestamp}>
+                                {message.timestamp.toLocaleTimeString('en-US', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                }).toLowerCase()}
+                            </div>
                         </div>
                     </div>
                 ))}
-
-                {/* Enhanced typing indicator */}
-                {isBotTyping && (
+                
+              {isBotTyping && (
                     <div className={`${styles.message} ${styles.botMessage}`}>
                         <div className={styles.typingContainer}>
                             <span className={styles.typingText}>Bot is typing</span>
@@ -150,6 +162,7 @@ export default function ChatInterface() {
                     onClick={handleSend}
                     disabled={isLoading || !inputValue.trim()}
                     aria-label="Send message"
+                    className={styles.sendButton}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

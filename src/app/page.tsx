@@ -13,7 +13,7 @@ export default function Home() {
         <ChatInterface/>
       </main>
       <footer className={styles.footer}>
-        <p>© {new Date().getFullYear()} Lost Girls Vintage</p>
+        <p>© {new Date().getFullYear()}  CreatoRain</p>
       </footer>
     </div>
   );
