@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import ChatWindow from './chat/chat.window';
-import MessageInput from './chat/message.input';
+import ChatWindow from './chat.window';
+import MessageInput from './message.input';
 import styles from './chat/chat-page.module.css';
 
 export default function ChatPage() {
