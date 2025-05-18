@@ -167,3 +167,8 @@
     border-radius: 0;
   }
 }
+
+.errorMessage {
+  background-color: rgba(255, 67, 67, 0.1) !important;
+  border-left: 3px solid rgb(255, 67, 67);
+}

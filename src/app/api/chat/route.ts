@@ -1,25 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define response types
+interface SuccessResponse {
+  response: string;
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+type ApiResponse = SuccessResponse | ErrorResponse;
+
+// Helper functions
+const createSuccessResponse = (message: string): NextResponse<SuccessResponse> => {
+  return NextResponse.json({ response: message });
+};
+
+const createErrorResponse = (message: string, status: number): NextResponse<ErrorResponse> => {
+  return NextResponse.json({ error: message }, { status });
+};
+
+const simulateNetworkLatency = async (ms: number = 800) => {
+  await new Promise(resolve => setTimeout(resolve, ms));
+};
+
+// Main handler
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const q = searchParams.get('q');
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const q = searchParams.get('q');
 
-  if (!q) {
-    return NextResponse.json({ error: 'Invalid query parameter' }, { status: 400 });
+    if (!q) {
+      return createErrorResponse('Invalid query parameter', 400);
+    }
+
+    // Add a slight delay to simulate network latency
+    await simulateNetworkLatency();
+
+    // Process the query
+    return processQuery(q.toLowerCase());
+  } catch (err) {
+    console.error('Unexpected error in chat API:', err);
+    return createErrorResponse('An unexpected error occurred', 500);
   }
+}
 
-  // Add a slight delay to simulate network latency
-  await new Promise(resolve => setTimeout(resolve, 800));
-
-  switch (q.toLowerCase()) {
+// Query processor
+function processQuery(query: string): NextResponse<ApiResponse> {
+  switch (query) {
     case 'hello':
-      return NextResponse.json({ response: 'Hello! How can I help you today?' });
+      return createSuccessResponse('Hello! How can I help you today?');
+
     case 'what is your name?':
     case 'what is your name':
-      return NextResponse.json({ response: "I'm a chatbot built by MAS." });
+      return createSuccessResponse("I'm a chatbot built by MAS.");
+
     case 'error':
-      return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+      return createErrorResponse('Something went wrong', 500);
+
     default:
-      return NextResponse.json({ response: "Sorry, I didn't understand that." });
+      return createSuccessResponse("Sorry, I didn't understand that.");
   }
 }

@@ -1,46 +1,28 @@
 "use client";
 
-import { FormEvent, KeyboardEvent } from 'react';
+import { FormEvent } from 'react';
 import styles from './Chatbot.module.css';
 import ChatHeader from './ChatHeader';
-import Message from './Message';
-import TypingIndicator from './TypingIndicator';
+import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
-import EmptyState from './EmptyState';
-import { useChatMessages, useChatApi, Message as MessageType } from '../hooks/useChatHooks';
+import { useMessages } from '../hooks/useMessages';
+import { useMessageInput } from '../hooks/useMessageInput';
+import { useChatApi } from '../hooks/useChatApi';
+import { createUserMessage, createBotMessage, handleKeyDown } from '../utils/messageHandlers';
 
 export default function Chatbot() {
-  const {
-    messages,
-    inputValue,
-    messagesEndRef,
-    addMessage,
-    handleInputChange,
-    clearInput
-  } = useChatMessages();
-
+  const { messages, messagesEndRef, addMessage } = useMessages();
+  const { inputValue, handleInputChange, clearInput } = useMessageInput();
   const { isTyping, sendMessage } = useChatApi();
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!inputValue.trim()) return;
+    const trimmedInput = inputValue.trim();
+    if (!trimmedInput) return;
 
     // Add user message to chat
-    const userMessage: MessageType = {
-      id: Date.now().toString(),
-      text: inputValue,
-      sender: 'user',
-      timestamp: new Date(),
-    };
-
+    const userMessage = createUserMessage(trimmedInput);
     addMessage(userMessage);
     clearInput();
 
@@ -48,37 +30,34 @@ export default function Chatbot() {
     const result = await sendMessage(userMessage.text);
 
     // Add bot response to chat
-    const botMessage: MessageType = {
-      id: (Date.now() + 1).toString(),
-      text: result.success ? result.response! : result.error!,
-      sender: 'bot',
-      timestamp: new Date(),
-    };
+    const botMessage = createBotMessage(
+      result.success ? result.response! : result.error!,
+      !result.success
+    );
 
     addMessage(botMessage);
+  };
+
+  const handleKeyDownWrapper = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    handleKeyDown(e, handleSubmit);
   };
 
   return (
     <div className={styles.chatbotContainer}>
       <ChatHeader />
 
-      <div className={styles.chatWindow}>
-        {messages.length === 0 && <EmptyState />}
-
-        {messages.map((message) => (
-          <Message key={message.id} message={message} />
-        ))}
-
-        {isTyping && <TypingIndicator />}
-
-        <div ref={messagesEndRef} />
-      </div>
+      <ChatWindow
+        messages={messages}
+        isTyping={isTyping}
+        messagesEndRef={messagesEndRef}
+      />
 
       <MessageInput
         value={inputValue}
         onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleKeyDownWrapper}
         onSubmit={handleSubmit}
+        isTyping={isTyping}
       />
     </div>
   );
