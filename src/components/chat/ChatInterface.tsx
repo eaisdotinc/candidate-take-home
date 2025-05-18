@@ -10,6 +10,8 @@ type Message = {
     timestamp: Date;
 };
 
+
+
 export default function ChatInterface() {
     const [messages, setMessages] = useState<Message[]>([
         {
