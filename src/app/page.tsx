@@ -1,95 +1,73 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
 import styles from "./page.module.css";
+import axios from 'axios';
 
-export default function Home() {
+export default function ChatPage() {
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { sender: 'user', text: input };
+
+    // Add user's message and temporary "Bot is typing..." message
+    setMessages((prev) => [...prev, userMessage, { sender: 'bot', text: 'Bot is typing...' }]);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const res = await axios.post('/api/chat', {
+        message: input,
+      });
+
+      const responseData = res.data.reply;
+
+      // Replace "Bot is typing..." with actual response
+      setMessages((prev) => [
+        ...prev.slice(0, -1), // Remove "Bot is typing..."
+        { sender: 'bot', text: responseData },
+      ]);
+    } catch (error) {
+      // Replace "Bot is typing..." with error message
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { sender: 'bot', text: 'Something went wrong. Please try again.' },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className={styles.chatContainer}>
+      <div className={styles.chatWindow}>
+        {messages.map((msg, index) => (
+          <div key={index} className={msg.sender === 'user' ? styles.userMsg : styles.botMsg}>
+            {msg.text}
+          </div>
+        ))}
+        <div ref={chatEndRef} />
+      </div>
+      <div className={styles.inputSection}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          placeholder="Type your message..."
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <button onClick={sendMessage} disabled={loading}>
+          {loading ? '...' : 'Send'}
+        </button>
+      </div>
     </div>
   );
 }
