@@ -2,8 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import styles from './Chatbot.module.css';
+import ChatHeader from './ChatHeader';
+import Message from './Message';
+import TypingIndicator from './TypingIndicator';
+import MessageInput from './MessageInput';
+import EmptyState from './EmptyState';
 
-interface Message {
+export interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
@@ -101,51 +106,26 @@ export default function Chatbot() {
 
   return (
     <div className={styles.chatbotContainer}>
-      <div className={styles.chatHeader}>
-        <h2>Lost Girls Vintage</h2>
-        <p>Customer Support</p>
-      </div>
+      <ChatHeader />
 
       <div className={styles.chatWindow}>
-        {messages.length === 0 && (
-          <div className={styles.emptyState}>
-            <p>How can we help you today?</p>
-          </div>
-        )}
+        {messages.length === 0 && <EmptyState />}
 
         {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`${styles.messageBubble} ${message.sender === 'user' ? styles.userMessage : styles.botMessage}`}
-          >
-            {message.text}
-          </div>
+          <Message key={message.id} message={message} />
         ))}
 
-        {isTyping && (
-          <div className={`${styles.messageBubble} ${styles.botMessage} ${styles.typingIndicator}`}>
-            <span className={styles.dot}></span>
-            <span className={styles.dot}></span>
-            <span className={styles.dot}></span>
-          </div>
-        )}
+        {isTyping && <TypingIndicator />}
 
         <div ref={messagesEndRef} />
       </div>
 
-      <form className={styles.inputContainer} onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
-          className={styles.messageInput}
-        />
-        <button type="submit" className={styles.sendButton}>
-          Send
-        </button>
-      </form>
+      <MessageInput
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }
