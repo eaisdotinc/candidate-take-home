@@ -1,12 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import styles from './page.module.css';
+import { useState, useEffect, useRef } from 'react';
+import styles from "./page.module.css"
+import axios from 'axios';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -18,16 +24,16 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, { sender: 'bot', text: 'Bot is typing...' }]);
 
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+      const res = await axios.post('/api/chat', {
+        message: input,
       });
 
-      const data = await res.json();
+      const responseData = res.data.reply;
+
       setMessages((prev) => [
-        ...prev.slice(0, -1), 
-        { sender: 'bot', text: data.reply },
+        ...prev,
+        { sender: 'user', text: input },
+        { sender: 'bot', text: responseData },
       ]);
     } catch (error) {
       setMessages((prev) => [
@@ -47,6 +53,7 @@ export default function ChatPage() {
             {msg.text}
           </div>
         ))}
+        <div ref={chatEndRef} />
       </div>
       <div className={styles.inputSection}>
         <input
@@ -56,7 +63,7 @@ export default function ChatPage() {
           placeholder="Type your message..."
         />
         <button onClick={sendMessage} disabled={loading}>
-          Send
+          {loading ? '...' : 'Send'}
         </button>
       </div>
     </div>
