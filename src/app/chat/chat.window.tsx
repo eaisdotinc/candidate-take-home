@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react';
 import styles from './chat-page.module.css';
 
-interface ChatWindowProps {
-  messages: string[];
+interface Message {
+  sender: 'user' | 'bot';
+  text: string;
 }
 
-export default function ChatWindow({ messages }: ChatWindowProps) {
+interface ChatWindowProps {
+  messages: Message[];
+  isTyping: boolean;
+}
+
+export default function ChatWindow({ messages, isTyping }: ChatWindowProps) {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -14,11 +20,25 @@ export default function ChatWindow({ messages }: ChatWindowProps) {
 
   return (
     <div className={styles['chat-window']}>
-      {messages.map((msg, idx) => (
-        <div key={idx} className={styles['message-bubble']}>
-          <span className={styles['message-text']}>{msg}</span>
+      {messages.map((msg, index) => (
+        <div
+          key={index}
+          className={
+            msg.sender === 'user'
+              ? styles['user-message']
+              : styles['bot-message']
+          }
+        >
+          <div className={styles['message-bubble']}>
+            <span className={styles['message-text']}>{msg.text}</span>
+          </div>
         </div>
       ))}
+      {isTyping && (
+        <div className={styles['bot-message']}>
+          <div className={styles['typing-indicator']}>Typing...</div>
+        </div>
+      )}
       <div ref={chatEndRef} />
     </div>
   );
