@@ -6,7 +6,7 @@
 
 # Introduction
 
-Hello, thank you for showing your interest in working with us! We are looking for talented engineers who are both skilled in frontend development and passionate in making a difference in the AI space. Should any part of this task look ambiguous or needs further clarification, shoot us your questions at hi@jeffreyd.cz and we are happy to help!
+Hello, thank you for showing your interest in working with us! We are looking for talented engineers who are both skilled in frontend development and passionate in making a difference in the AI space. Should any part of this task look ambiguous or needs further clarification, shoot us your questions at jeffery@creatorain.com and we are happy to help!
 
 To submit this assessment, please commit your code to Github (preferred) or another version control platform and share a link to your repository.
 
