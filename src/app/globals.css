@@ -1,42 +1,89 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --app-bg: #f9fafb;
+  --sidebar-bg: #f3f4f6;
+  --main-content-bg: linear-gradient(180deg, #f0fdf4 0%, #f9fafb 100%);
+  --main-content-bg-solid: #f9fafb;
+
+  --header-app-bg: #ffffff;
+  --header-app-border: #e5e7eb;
+  --header-app-text: #374151;
+  --user-icon-bg: #d1d5db;
+  --user-icon-text: #4b5563;
+
+  --user-message-bg: #f3f4f6;
+  --user-message-text: #1f2937;
+  --bot-message-bg: #ffffff;
+  --bot-message-text: #1f2937;
+  --bot-message-border: #e5e7eb;
+  --bot-avatar-gradient: linear-gradient(135deg, #6ee7b7 0%, #3b82f6 100%);
+
+  --input-container-bg: #ffffff;
+  --input-textarea-bg: #ffffff;
+  --input-textarea-border: #d1d5db;
+  --input-textarea-focus-border: #a5b4fc;
+  --input-text-color: #1f2937;
+  --input-placeholder-color: #9ca3af;
+  --input-icon-color: #6b7280;
+  --input-icon-hover-bg: #e5e7eb;
+
+  --error-message-bg: #fee2e2;
+  --error-message-text: #991b1b;
+
+  --timestamp-color: #9ca3af;
+  --timestamp-display: none;
+
+  --dark-app-bg: #111827;
+  --dark-sidebar-bg: #1f2937;
+  --dark-main-content-bg: linear-gradient(180deg, #1a2521 0%, #111827 100%);
+  --dark-main-content-bg-solid: #111827;
+
+  --dark-header-app-bg: #1f2937;
+  --dark-header-app-border: #374151;
+  --dark-header-app-text: #e5e7eb;
+  --dark-user-icon-bg: #4b5563;
+  --dark-user-icon-text: #f9fafb;
+
+  --dark-user-message-bg: #374151;
+  --dark-user-message-text: #e5e7eb;
+  --dark-bot-message-bg: #1f2937;
+  --dark-bot-message-text: #e5e7eb;
+  --dark-bot-message-border: #374151;
+  --dark-bot-avatar-gradient: linear-gradient(135deg, #34d399 0%, #60a5fa 100%);
+
+  --dark-input-container-bg: #1f2937;
+  --dark-input-textarea-bg: #111827;
+  --dark-input-textarea-border: #4b5563;
+  --dark-input-textarea-focus-border: #60a5fa;
+  --dark-input-text-color: #e5e7eb;
+  --dark-input-placeholder-color: #6b7280;
+  --dark-input-icon-color: #9ca3af;
+  --dark-input-icon-hover-bg: #374151;
+
+  --dark-timestamp-color: #6b7280;
 }
 
 html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
+body,
+#__next {
+  height: 100%;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f5f7;
+  color: #333;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
