@@ -1,19 +1,54 @@
+/* ==================================================
+   Global CSS for Chatbot (modified for proper borders/scroll)
+   ==================================================
+*/
+
 :root {
-  --background: #ffffff;
+  --background: #fff;
   --foreground: #171717;
+  --user-message-bg: #2563eb;
+  --user-message-fg: #fff;
+  --bot-message-bg: #171717;
+  --bot-message-fg: #fff;
+  --error-bg: rgba(255, 67, 67, 0.13);
+  --error-fg: #b91c1c;
+  --online-green: #22c55e;
+  --chatbot-border-light: #d1d5db;
+  --chatbot-border-dark: #444;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --user-message-bg: #3b82f6;
+    --user-message-fg: #fff;
+    --bot-message-bg: #222;
+    --bot-message-fg: #ededed;
+    --error-bg: rgba(255, 67, 67, 0.18);
+    --error-fg: #f87171;
+    --chatbot-border: var(--chatbot-border-dark);
   }
 }
 
+@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+  :root {
+    --chatbot-border: var(--chatbot-border-light);
+  }
+}
+
+/* ==================================================
+   Base styles to allow internal scrolling
+   ==================================================
+*/
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -26,17 +61,410 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* ==================================================
+   Page Wrapper (centers chatbot on the page)
+   ==================================================
+*/
+.page {
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
   padding: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 0;
+    min-height: 100vh;
+    justify-content: center;
+  }
+}
+
+/* ==================================================
+   Chatbot Outer Wrapper (centers container)
+   ==================================================
+*/
+.chatbot-unified-outer-wrapper {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ==================================================
+   Chatbot Container (bordered, flexible height)
+   ==================================================
+*/
+.chatbot-unified-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: var(--background);
+  border: 2.5px solid var(--chatbot-border);
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  width: 75vw;
+  max-width: 900px;
+  min-width: 320px;
+  height: 80vh;
+  max-height: 90vh;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .chatbot-unified-container {
+    width: 95vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 16px;
+    height: 90vh;
+    max-height: 95vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .chatbot-unified-container {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 12px;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0 auto;
+    border: 2.5px solid var(--chatbot-border);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+}
+
+/* ==================================================
+   Chat Header (fixed height, border-bottom to separate)
+   ==================================================
+*/
+.chatbot-unified-header {
+  flex-shrink: 0;
+  padding: 24px 20px 16px 20px;
+  background-color: var(--foreground);
+  color: var(--background);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1.5px solid var(--chatbot-border);
+  border-radius: 22px 22px 0 0;
+  position: relative;
+  z-index: 2;
+}
+
+.chatbot-unified-header .status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.chatbot-unified-header .online-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--online-green);
+  box-shadow: 0 0 4px 1px var(--online-green);
+  display: inline-block;
+}
+
+.chatbot-unified-header h2 {
   margin: 0;
+  font-size: 22px;
+  font-weight: 600;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.chatbot-unified-header p,
+.chatbot-unified-header .status-row span {
+  margin: 4px 0 0;
+  font-size: 16px;
+  opacity: 0.85;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* ==================================================
+   Chat Window / Messages (scrollable middle)
+   ==================================================
+*/
+.chatbot-unified-window {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px 24px 24px 24px;
+  background: var(--background);
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd transparent;
+  z-index: 1;
+}
+
+.chatbot-unified-window::-webkit-scrollbar {
+  width: 7px;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.chatbot-unified-window::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 8px;
+  min-height: 40px;
+  transition: background 0.2s;
+}
+
+.chatbot-unified-window::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.chatbot-unified-window::-webkit-scrollbar-button {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* Center placeholder text when no messages
+   (if using a .chatbot-unified-empty element) */
+.chatbot-unified-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  opacity: 0.6;
+  font-size: 16px;
+}
+
+/* ==================================================
+   Individual Message Styling
+   ==================================================
+*/
+.chatbot-unified-message {
+  max-width: 80%;
+  padding: 20px 28px;
+  border-radius: 22px;
+  font-size: 22px;
+  line-height: 1.6;
+  word-break: break-word;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: background 0.2s;
+}
+
+.chatbot-unified-user {
+  align-self: flex-end;
+  background: var(--user-message-bg);
+  color: var(--user-message-fg);
+  border-bottom-right-radius: 8px;
+  border-top-right-radius: 22px;
+  border-top-left-radius: 22px;
+  border-bottom-left-radius: 22px;
+  margin-left: 20%;
+}
+
+.chatbot-unified-bot {
+  align-self: flex-start;
+  background: var(--bot-message-bg);
+  color: var(--bot-message-fg);
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 22px;
+  border-top-left-radius: 22px;
+  border-bottom-right-radius: 22px;
+  margin-right: 20%;
+}
+
+.chatbot-unified-error {
+  background: var(--error-bg) !important;
+  border-left: 3px solid rgb(255, 67, 67);
+  color: var(--error-fg);
+}
+
+.chatbot-unified-typing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 12px 16px;
+}
+
+.chatbot-unified-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--foreground);
+  margin: 0 3px;
+  opacity: 0.6;
+  animation: chatbot-unified-bounce 1.4s infinite ease-in-out;
+}
+
+.chatbot-unified-dot:nth-child(1) { animation-delay: 0s; }
+.chatbot-unified-dot:nth-child(2) { animation-delay: 0.2s; }
+.chatbot-unified-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes chatbot-unified-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+/* ==================================================
+   Input Container & Buttons (fixed at bottom)
+   ==================================================
+*/
+.chatbot-unified-input-container {
+  display: flex;
+  padding: 18px;
+  border-top: 1.5px solid var(--chatbot-border);
+  gap: 12px;
+  background: var(--background);
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.chatbot-unified-input {
+  flex: 1;
+  padding: 16px 20px;
+  border-radius: 28px;
+  border: 1.5px solid #e5e7eb;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 18px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chatbot-unified-input:focus {
+  border-color: #3b82f6;
+}
+
+.chatbot-unified-send {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 28px;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chatbot-unified-send:hover { background-color: #2563eb; }
+.chatbot-unified-send:active { background-color: #1d4ed8; }
+
+/* ==================================================
+   Responsive Breakpoints (desktop to mobile)
+   ==================================================
+*/
+@media (max-width: 900px) {
+  .chatbot-unified-container {
+    width: 95vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 16px;
+    height: 90vh;
+    max-height: 95vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .chatbot-unified-container {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-radius: 12px;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0 auto;
+    border: 2.5px solid var(--chatbot-border);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+
+  .chatbot-unified-header {
+    padding: 18px 8px 10px 8px;
+    border-top: none;
+    border-bottom: 1.5px solid var(--chatbot-border);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .chatbot-unified-window {
+    padding: 12px 4px;
+    gap: 10px;
+    flex: 1 1 0%;
+    overflow-y: auto;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+    max-height: 100%;
+  }
+
+  .chatbot-unified-message {
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  .chatbot-unified-user,
+  .chatbot-unified-bot {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 95%;
+  }
+
+  .chatbot-unified-input-container {
+    padding: 10px 6px;
+    gap: 6px;
+    border-top: 1.5px solid var(--chatbot-border);
+    border-radius: 0 0 12px 12px;
+    position: sticky;
+    bottom: 0;
+    background: var(--background);
+  }
+
+  .chatbot-unified-input {
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 18px;
+  }
+
+  .chatbot-unified-send {
+    font-size: 14px;
+    padding: 0 12px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 400px) {
+  .chatbot-unified-container {
+    height: 100vh;
+    max-width: 100vw;
+    border-radius: 0;
+    margin: 0;
   }
 }
