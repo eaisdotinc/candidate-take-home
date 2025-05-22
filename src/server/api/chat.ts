@@ -15,6 +15,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     case 'error':
       return res.status(500).json({ error: 'Something went wrong' });
     default:
-      return res.status(200).json({ response: "Sorry, I didn't understand that." });
+      return res.status(200).json({ response: "I don’t have that info right now. Maybe try asking something else?" });
   }
 }
